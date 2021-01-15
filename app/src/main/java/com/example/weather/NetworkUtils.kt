@@ -19,6 +19,7 @@ internal class NetworkUtils {
         private const val LANG = "lang"
         private const val UNITS = "units"
         fun generateURL(city: String?): URL? {
+            Log.d("MyTag", "NetworkUtils generateURL " )
             val builtUri = Uri.parse(WEATHER_API_BASE_URL)
                     .buildUpon()
                     .appendQueryParameter(CITY, city)
@@ -27,7 +28,6 @@ internal class NetworkUtils {
                     .appendQueryParameter(LANG, "ru")
                     .appendQueryParameter(UNITS, "metric")
                     .build()
-            Log.d("MyTag", "тут вот что?$builtUri")
             var url: URL? = null
             try {
                 url = URL(builtUri.toString())
@@ -39,13 +39,13 @@ internal class NetworkUtils {
 
         @Throws(IOException::class)
         fun getResponseFromURL(url: URL?): String? {
+            Log.d("MyTag", "NetworkUtils getResponseFromURL " )
             val urlConnection = url?.openConnection() as HttpURLConnection
             return try {
                 val `in` = urlConnection.inputStream
                 val scanner = Scanner(`in`)
                 scanner.useDelimiter("//A")
                 val hasInput = scanner.hasNext()
-                Log.d("MyTag", "тут вот что?$hasInput")
                 if (hasInput) {
                     scanner.next()
                 } else {
