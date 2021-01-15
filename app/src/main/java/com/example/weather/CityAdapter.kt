@@ -14,29 +14,28 @@ class CityAdapter(
 ) : RecyclerView.Adapter<CityAdapter.CityViewHolder>() {
 
     interface OnItemClickListener {
-        fun onItemClick(cityName: String) {
-        }
+       fun onItemClick(cityName: String)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CityViewHolder {
-        Log.d("MyTag", "CityAdapter onCreateViewHolder" )
+        Log.d("MyTag", "CityAdapter onCreateViewHolder")
         return CityViewHolder(LayoutInflater.from(parent.context)
                 .inflate(R.layout.item, parent, false))
     }
 
     override fun onBindViewHolder(holder: CityViewHolder, position: Int) {
-        Log.d("MyTag", "CityAdapter onBindViewHolder" )
-        val cityNameItem = cityNameList.get(position)
-        holder.cityNameTextView?.setText(cityNameItem.name)
+        Log.d("MyTag", "CityAdapter onBindViewHolder")
+        val cityNameItem = cityNameList[position]
+        holder.cityNameTextView?.text = cityNameItem.name
         Log.d("MyTag", "CityAdapter cityNameTextView.setText")
-        holder.resultWeatherTextView?.setText(cityNameItem.temper)
+        holder.resultWeatherTextView?.text = cityNameItem.temper
         Log.d("MyTag", "Че хранит мапа ${cityNameItem}${cityNameItem.temper}")
-        if(cityNameItem.temper == null) onItemClickListener.onItemClick(cityNameItem.name!!)
-            Log.d("MyTag", "CityAdapter onItemClickListener.onItemClick")
+        if (cityNameItem.temper == null) onItemClickListener.onItemClick(cityNameItem.name!!)
+        Log.d("MyTag", "CityAdapter onItemClickListener.onItemClick")
     }
 
     override fun getItemCount(): Int {
-        Log.d("MyTag", "CityAdapter getItemCount" )
+        Log.d("MyTag", "CityAdapter getItemCount")
         return cityNameList.size
     }
 
@@ -51,12 +50,10 @@ class CityAdapter(
     }
 
     fun onTemperatureArrived(cityName: String, temperature: String) {
-        Log.d("MyTag", "CityAdapter onTemperatureArrived" )
-       val index =  cityNameList.indexOfFirst { it.name == cityName }
+        Log.d("MyTag", "CityAdapter onTemperatureArrived")
+        val index = cityNameList.indexOfFirst { it.name == cityName }
         if (index == -1) return
         cityNameList.get(index).temper = temperature
-        // Log.d("CityAdapter", "Че хранит мапа $temperature")
         notifyItemChanged(index)
-
     }
 }

@@ -18,33 +18,10 @@ import java.lang.ref.WeakReference
 import java.net.URL
 
 class MainActivity : AppCompatActivity() {
-    private var editTextCity: EditText? = null
-    private var textViewWeather: TextView? = null
-    private var btnSearch: Button? = null
-    private var rvListCity: RecyclerView? = null
-    private val cityNameList = listOf<City>(
-            City("Москва"),
-            City("Санкт-Петербург"),
-            City("Набережные Челны"),
-            City("Воронеж"),
-            City("Заинск"),
-            City("Сургут"),
-            City("Владивосток"),
-            City("Хабаровск"),
-            City("Сочи"),
-            City("Краснодар"),
-            City("Пермь"),
-            City("Самара"),
-            City("Казань"),
-            City("Дубай"),
-            City("Нью-Йорк"),
-            City("Симферополь"),
-            City("Красноярск"),
-            City("Барселона"),
-            City("Манчестер"),
-            City("Лондон"),
-            City("Париж")
-    )
+    lateinit var editTextCity: EditText
+    lateinit var textViewWeather: TextView
+    lateinit var btnSearch: Button
+    lateinit var rvListCity: RecyclerView
     lateinit var adapter: CityAdapter
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d("MyTag", "MainActivity onCreate ")
@@ -55,11 +32,14 @@ class MainActivity : AppCompatActivity() {
         btnSearch = findViewById(R.id.b_search)
         rvListCity = findViewById(R.id.rv_list_city)
         val onClickListener = View.OnClickListener {
-            val generatedURL = NetworkUtils.generateURL(editTextCity?.getText().toString())
+            val generatedURL = NetworkUtils.generateURL(editTextCity.getText().toString())
             DownloadWeatherTask(this).execute(generatedURL)
         }
-        btnSearch?.setOnClickListener(onClickListener)
+        btnSearch.setOnClickListener(onClickListener)
 
+        val cityNameList = resources.getStringArray(R.array.city_name).map { nameFromArray ->
+            City(name = nameFromArray)
+        }
         adapter = CityAdapter(cityNameList, object : CityAdapter.OnItemClickListener {
             override fun onItemClick(cityName: String) {
                 Log.d("MyTag", "MainActivity OnItemClick ")
@@ -68,8 +48,8 @@ class MainActivity : AppCompatActivity() {
                 Log.i("MainActivity", "blablbabla")
             }
         })
-        rvListCity?.setLayoutManager(LinearLayoutManager(this))
-        rvListCity?.setAdapter(adapter)
+        rvListCity.layoutManager = LinearLayoutManager(this)
+        rvListCity.adapter = adapter
     }
 
     internal class DownloadWeatherTask(context: MainActivity) : AsyncTask<URL?, Void?, String?>() {
@@ -106,7 +86,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 val weather = String.format("%s\nТемпература: %s\nНа улице: %s", city, temp, description)
                 val temper = String.format(" %s", temp)
-                activity.textViewWeather!!.text = weather
+                activity.textViewWeather.text = weather
                 Log.d("MyTag", "blablbabla2 $temp")
                 activity.adapter.onTemperatureArrived(city!!, temper)
             } else {
