@@ -3,4 +3,26 @@
     <string name="et_weather">Введите название города</string>
     <string name="b_search">Поиск</string>
     <string name="not_find_city">ddddd</string>
+
+    <string-array name="city_name">
+        <item>Москва</item>
+        <item>Санкт-Петербург</item>
+        <item>Набережные Челны</item>
+        <item>Астрахань</item>
+        <item>Бугульма</item>
+        <item>Заинск</item>
+        <item>Елабуга</item>
+        <item>Владивосток</item>
+        <item>Хабаровск</item>
+        <item>Сургут</item>
+        <item>Нижневартовск</item>
+        <item>Иркутск</item>
+        <item>Балашиха</item>
+        <item>Пермь</item>
+        <item>Мензелинск</item>
+        <item>Севастополь</item>
+        <item>Дубай</item>
+        <item>Вашингтон</item>
+        <item>Ростов-на-Дону</item>
+    </string-array>
 </resources>
