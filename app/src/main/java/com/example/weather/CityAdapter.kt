@@ -1,11 +1,11 @@
 package com.example.weather
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import timber.log.Timber
 
 
 class CityAdapter(
@@ -18,24 +18,24 @@ class CityAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CityViewHolder {
-        Log.d("MyTag", "CityAdapter onCreateViewHolder")
+        Timber.d("CityAdapter onCreateViewHolder")
         return CityViewHolder(LayoutInflater.from(parent.context)
                 .inflate(R.layout.item, parent, false))
     }
 
     override fun onBindViewHolder(holder: CityViewHolder, position: Int) {
-        Log.d("MyTag", "CityAdapter onBindViewHolder")
+        Timber.d("CityAdapter onBindViewHolder")
         val cityNameItem = cityNameList[position]
         holder.cityNameTextView?.text = cityNameItem.name
-        Log.d("MyTag", "CityAdapter cityNameTextView.setText")
+        Timber.d("CityAdapter cityNameTextView.setText")
         holder.resultWeatherTextView?.text = cityNameItem.temper
-        Log.d("MyTag", "Че хранит мапа ${cityNameItem}${cityNameItem.temper}")
+        Timber.d("Че хранит мапа ${cityNameItem}${cityNameItem.temper}")
         if (cityNameItem.temper == null) onItemClickListener.onItemClick(cityNameItem.name!!)
-        Log.d("MyTag", "CityAdapter onItemClickListener.onItemClick")
+        Timber.d("CityAdapter onItemClickListener.onItemClick")
     }
 
     override fun getItemCount(): Int {
-        Log.d("MyTag", "CityAdapter getItemCount")
+        Timber.d("CityAdapter getItemCount")
         return cityNameList.size
     }
 
@@ -50,7 +50,7 @@ class CityAdapter(
     }
 
     fun onTemperatureArrived(cityName: String, temperature: String) {
-        Log.d("MyTag", "CityAdapter onTemperatureArrived")
+        Timber.d("CityAdapter onTemperatureArrived")
         val index = cityNameList.indexOfFirst { it.name == cityName }
         if (index == -1) return
         cityNameList.get(index).temper = temperature

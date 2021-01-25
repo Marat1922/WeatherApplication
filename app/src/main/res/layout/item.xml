@@ -5,13 +5,15 @@
 
     <TextView
         android:id="@+id/tv_city_name"
+        android:layout_weight="1"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_gravity="center_vertical|start" />
+        android:gravity="center_vertical|start" />
 
     <TextView
         android:id="@+id/tv_result_weather"
+        android:layout_weight="1"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_gravity="center_vertical|end"/>
+        android:gravity="center_vertical|end" />
 </LinearLayout>
