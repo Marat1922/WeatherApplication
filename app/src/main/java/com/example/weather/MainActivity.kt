@@ -9,8 +9,6 @@ import android.location.LocationManager
 import android.os.AsyncTask
 import android.os.Bundle
 import android.preference.PreferenceManager
-import android.util.Log
-import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -38,7 +36,13 @@ class MainActivity : AppCompatActivity() {
     lateinit var rvListCity: RecyclerView
     lateinit var adapter: CityAdapter
     lateinit var fusedLocationClient: FusedLocationProviderClient
-    var RECORD_REQUEST_CODE: Int = 101
+    lateinit var sharedPreferences: SharedPreferences
+
+    companion object {
+        const val RECORD_REQUEST_CODE: Int = 101
+        const val KEY_CITY: String = "City"
+        const val DEFAULT_CITY: String = "Бугульма"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Timber.d("метод onCreate")
@@ -50,10 +54,9 @@ class MainActivity : AppCompatActivity() {
         btnSearch = findViewById(R.id.b_search)
         rvListCity = findViewById(R.id.rv_list_city)
 
-        val onClickListener = View.OnClickListener {
+        btnSearch.setOnClickListener {
             loadWeather(editTextCity.text.toString(), false)
         }
-        btnSearch.setOnClickListener(onClickListener)
 
         val cityNameList = resources.getStringArray(R.array.city_name).map { nameFromArray ->
             City(name = nameFromArray)
@@ -72,8 +75,6 @@ class MainActivity : AppCompatActivity() {
             получитьГород()
         }
 
-
-
         adapter = CityAdapter(cityNameList, object : CityAdapter.OnItemClickListener {
             override fun onItemClick(cityName: String) {
                 Timber.d("MainActivity OnItemClick ")
@@ -82,7 +83,6 @@ class MainActivity : AppCompatActivity() {
         })
         rvListCity.layoutManager = LinearLayoutManager(this)
         rvListCity.adapter = adapter
-
 
     }
 
@@ -93,8 +93,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun loadWeather(city: String, isFromRecycler: Boolean) {
         Timber.d("метод loadWeather")
-        val generatedURL2 = NetworkUtils.generateURL(city)
-        DownloadWeatherTask(this, isFromRecycler).execute(generatedURL2)
+        DownloadWeatherTask(this, isFromRecycler).execute(NetworkUtils.generateURL(city))
     }
 
     private fun получитьГород() {
@@ -115,14 +114,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun сохранитьГородВШару(cityName: String) {
-        val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-        sharedPreferences.getString("City", "Бугульма")
-        sharedPreferences.edit().putString("City", cityName).apply()
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        sharedPreferences.getString(KEY_CITY, DEFAULT_CITY)
+        sharedPreferences.edit().putString(KEY_CITY, cityName).apply()
     }
 
     fun взятьГородИзШары(): String {
-        val sharedPreferences2: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
-        return sharedPreferences2.getString("City", "Бугульма") ?: "Бугульма"
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        return sharedPreferences.getString(KEY_CITY, DEFAULT_CITY) ?: DEFAULT_CITY
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -171,17 +170,15 @@ class MainActivity : AppCompatActivity() {
                     temp = jsonObject.getJSONObject("main").getString("temp")
                     description = jsonObject.getJSONArray("weather").getJSONObject(0).getString("description")
                 } catch (e: JSONException) {
-                    e.printStackTrace()
+                    Timber.e(e, "an error occurred while parsing the server response")
                 }
-                val weather = String.format("Ваш город: %s\nТемпература: %s\nНа улице: %s", city, temp, description)
-                val temper = String.format(" %s", temp)
                 if (isFromRecycler) {
-                    activity.adapter.onTemperatureArrived(city!!, temper)
+                    activity.adapter.onTemperatureArrived(city!!, temp!!)
                 } else {
-                    activity.textViewWeather.text = weather
+                    activity.textViewWeather.text = activity.getString(R.string.s, city, temp, description)
                 }
             } else {
-                Toast.makeText(activity, "fff", Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, "Город не найден", Toast.LENGTH_SHORT).show()
             }
         }
     }

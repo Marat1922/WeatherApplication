@@ -2,6 +2,7 @@ package com.example.weather
 
 import android.net.Uri
 import android.util.Log
+import timber.log.Timber
 import java.io.IOException
 import java.net.HttpURLConnection
 import java.net.MalformedURLException
@@ -19,7 +20,7 @@ internal class NetworkUtils {
         private const val LANG = "lang"
         private const val UNITS = "units"
         fun generateURL(city: String?): URL? {
-            Log.d("MyTag", "NetworkUtils generateURL " )
+            Timber.d("NetworkUtils generateURL")
             val builtUri = Uri.parse(WEATHER_API_BASE_URL)
                     .buildUpon()
                     .appendQueryParameter(CITY, city)
@@ -39,7 +40,7 @@ internal class NetworkUtils {
 
         @Throws(IOException::class)
         fun getResponseFromURL(url: URL?): String? {
-            Log.d("MyTag", "NetworkUtils getResponseFromURL " )
+            Timber.d("NetworkUtils getResponseFromURL ")
             val urlConnection = url?.openConnection() as HttpURLConnection
             return try {
                 val `in` = urlConnection.inputStream
