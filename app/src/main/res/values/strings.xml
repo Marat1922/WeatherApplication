@@ -4,6 +4,8 @@
     <string name="b_search">Поиск</string>
     <string name="not_find_city">ddddd</string>
 
+    <string name="s">"Ваш город: %s\nТемпература: %s\nНа улице: %s"</string>
+
     <string-array name="city_name">
         <item>Москва</item>
         <item>Санкт-Петербург</item>
