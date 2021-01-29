@@ -1,11 +1,20 @@
 package com.example.weather
 
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.job.JobParameters
+import android.app.job.JobService
+import android.content.ContentResolver
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
 import android.location.LocationManager
+import android.media.MediaPlayer
+import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
 import android.preference.PreferenceManager
@@ -29,6 +38,7 @@ import java.lang.ref.WeakReference
 import java.net.URL
 import java.util.*
 
+
 class MainActivity : AppCompatActivity() {
     lateinit var editTextCity: EditText
     lateinit var textViewWeather: TextView
@@ -37,6 +47,10 @@ class MainActivity : AppCompatActivity() {
     lateinit var adapter: CityAdapter
     lateinit var fusedLocationClient: FusedLocationProviderClient
     lateinit var sharedPreferences: SharedPreferences
+    lateinit var notificationManager: NotificationManager
+    lateinit var notificationChannel: NotificationChannel
+    lateinit var builder: Notification.Builder
+    lateinit var btnNot: Button
 
     companion object {
         const val RECORD_REQUEST_CODE: Int = 101
@@ -53,6 +67,13 @@ class MainActivity : AppCompatActivity() {
         textViewWeather = findViewById(R.id.tv_result)
         btnSearch = findViewById(R.id.b_search)
         rvListCity = findViewById(R.id.rv_list_city)
+        btnNot = findViewById(R.id.button2)
+
+        btnNot.setOnClickListener {
+            intent = Intent(this, MyNotification::class.java)
+            startActivity(intent)
+
+        }
 
         btnSearch.setOnClickListener {
             loadWeather(editTextCity.text.toString(), false)
@@ -61,6 +82,7 @@ class MainActivity : AppCompatActivity() {
         val cityNameList = resources.getStringArray(R.array.city_name).map { nameFromArray ->
             City(name = nameFromArray)
         }
+        notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         loadWeather(взятьГородИзШары(), false)
         val permission = ContextCompat.checkSelfPermission(this,
