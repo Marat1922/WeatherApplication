@@ -2,7 +2,7 @@
     <string name="app_name">Weather</string>
     <string name="et_weather">Введите название города</string>
     <string name="b_search">Поиск</string>
-    <string name="not_find_city">ddddd</string>
+    <string name="not_find_city">Город не найден</string>
 
     <string name="s">"Ваш город: %s\nТемпература: %s\nНа улице: %s"</string>
     <string name="see_the_weather">Посмотрите погоду</string>

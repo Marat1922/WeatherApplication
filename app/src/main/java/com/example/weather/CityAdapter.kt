@@ -53,7 +53,7 @@ class CityAdapter(
         Timber.d("CityAdapter onTemperatureArrived")
         val index = cityNameList.indexOfFirst { it.name == cityName }
         if (index == -1) return
-        cityNameList.get(index).temper = temperature
+        cityNameList[index].temper = temperature
         notifyItemChanged(index)
     }
 }
