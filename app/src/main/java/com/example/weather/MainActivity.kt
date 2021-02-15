@@ -1,6 +1,8 @@
 package com.example.weather
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.location.Address
@@ -29,6 +31,7 @@ import java.lang.ref.WeakReference
 import java.net.URL
 import java.util.*
 
+
 class MainActivity : AppCompatActivity() {
     lateinit var editTextCity: EditText
     lateinit var textViewWeather: TextView
@@ -37,12 +40,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var adapter: CityAdapter
     lateinit var fusedLocationClient: FusedLocationProviderClient
     lateinit var sharedPreferences: SharedPreferences
-
-    companion object {
-        const val RECORD_REQUEST_CODE: Int = 101
-        const val KEY_CITY: String = "City"
-        const val DEFAULT_CITY: String = "Бугульма"
-    }
+    lateinit var btnNot: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Timber.d("метод onCreate")
@@ -53,16 +51,21 @@ class MainActivity : AppCompatActivity() {
         textViewWeather = findViewById(R.id.tv_result)
         btnSearch = findViewById(R.id.b_search)
         rvListCity = findViewById(R.id.rv_list_city)
+        btnNot = findViewById(R.id.button2)
+
+        btnNot.setOnClickListener {
+            intent = Intent(this, MyNotification::class.java)
+            startActivity(intent)
+        }
 
         btnSearch.setOnClickListener {
-            loadWeather(editTextCity.text.toString(), false)
+            loadWeather(this, editTextCity.text.toString(), false)
         }
 
         val cityNameList = resources.getStringArray(R.array.city_name).map { nameFromArray ->
             City(name = nameFromArray)
         }
-
-        loadWeather(взятьГородИзШары(), false)
+        loadWeather(this, takeTheCityFromSharedPreferences(), false)
         val permission = ContextCompat.checkSelfPermission(this,
                 android.Manifest.permission.ACCESS_COARSE_LOCATION)
         if (permission != PackageManager.PERMISSION_GRANTED) {
@@ -72,13 +75,13 @@ class MainActivity : AppCompatActivity() {
                     RECORD_REQUEST_CODE)
         } else if (permission == PackageManager.PERMISSION_GRANTED) {
 
-            получитьГород()
+            getCity()
         }
 
         adapter = CityAdapter(cityNameList, object : CityAdapter.OnItemClickListener {
             override fun onItemClick(cityName: String) {
                 Timber.d("MainActivity OnItemClick ")
-                loadWeather(cityName, true)
+                loadWeather(this@MainActivity, cityName, true)
             }
         })
         rvListCity.layoutManager = LinearLayoutManager(this)
@@ -91,12 +94,7 @@ class MainActivity : AppCompatActivity() {
         return LocationManagerCompat.isLocationEnabled(locationManager)
     }
 
-    private fun loadWeather(city: String, isFromRecycler: Boolean) {
-        Timber.d("метод loadWeather")
-        DownloadWeatherTask(this, isFromRecycler).execute(NetworkUtils.generateURL(city))
-    }
-
-    private fun получитьГород() {
+    private fun getCity() {
         Timber.d("метод получаетГород")
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         fusedLocationClient.lastLocation.addOnSuccessListener { location ->
@@ -107,19 +105,19 @@ class MainActivity : AppCompatActivity() {
                         location.longitude,
                         1)
                 val result = adress[0].locality
-                сохранитьГородВШару(result)
-                loadWeather(result, false)
+                saveCityToSharedPreferences(result)
+                loadWeather(this, result, false)
             }
         }
     }
 
-    fun сохранитьГородВШару(cityName: String) {
+    private fun saveCityToSharedPreferences(cityName: String) {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         sharedPreferences.getString(KEY_CITY, DEFAULT_CITY)
         sharedPreferences.edit().putString(KEY_CITY, cityName).apply()
     }
 
-    fun взятьГородИзШары(): String {
+    private fun takeTheCityFromSharedPreferences(): String {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
         return sharedPreferences.getString(KEY_CITY, DEFAULT_CITY) ?: DEFAULT_CITY
     }
@@ -133,16 +131,16 @@ class MainActivity : AppCompatActivity() {
                 val grantResult = grantResults[i]
                 if (permission == android.Manifest.permission.ACCESS_COARSE_LOCATION) {
                     if (grantResult == PackageManager.PERMISSION_GRANTED) {
-                        получитьГород()
+                        getCity()
                     }
                 }
             }
         }
     }
 
-    internal class DownloadWeatherTask(context: MainActivity, val isFromRecycler: Boolean) : AsyncTask<URL?, Void?, String?>() {
+    internal class DownloadWeatherTask(context: Activity, private val isFromRecycler: Boolean) : AsyncTask<URL?, Void?, String?>() {
 
-        private val activityReference: WeakReference<MainActivity> = WeakReference(context)
+        private val activityReference: WeakReference<Activity> = WeakReference(context)
 
         override fun doInBackground(vararg params: URL?): String? {
             Timber.d("MainActivity.DownloadWeatherTask doInBackground ")
@@ -172,14 +170,29 @@ class MainActivity : AppCompatActivity() {
                 } catch (e: JSONException) {
                     Timber.e(e, "an error occurred while parsing the server response")
                 }
-                if (isFromRecycler) {
-                    activity.adapter.onTemperatureArrived(city!!, temp!!)
+                if (activity is MainActivity) {
+                    if (isFromRecycler) {
+                        activity.adapter.onTemperatureArrived(city!!, temp!!)
+                    } else {
+                        activity.textViewWeather.text = activity.getString(R.string.s, city, temp, description)
+                    }
                 } else {
-                    activity.textViewWeather.text = activity.getString(R.string.s, city, temp, description)
+                    (activity as? MyNotification)?.яУзналТемпературу(temp!!)
                 }
             } else {
-                Toast.makeText(activity, "Город не найден", Toast.LENGTH_SHORT).show()
+                Toast.makeText(activity, R.string.not_find_city, Toast.LENGTH_SHORT).show()
             }
+        }
+    }
+
+    companion object {
+        const val RECORD_REQUEST_CODE: Int = 101
+        const val KEY_CITY: String = "City"
+        const val DEFAULT_CITY: String = "Бугульма"
+
+        fun loadWeather(context: Activity, city: String, isFromRecycler: Boolean) {
+            Timber.d("метод loadWeather")
+            DownloadWeatherTask(context, isFromRecycler).execute(NetworkUtils.generateURL(city))
         }
     }
 }
