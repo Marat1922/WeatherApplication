@@ -6,16 +6,15 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-
     <EditText
         android:id="@+id/et_weather"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:paddingStart="10dp"
         android:ems="10"
-        android:inputType="textPersonName"
-        android:importantForAutofill="no"
         android:hint="@string/et_weather"
+        android:importantForAutofill="no"
+        android:inputType="textPersonName"
+        android:padding="@dimen/indent_text_view_in_main_activity"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -30,43 +29,52 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/et_weather" />
 
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:text="Button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/b_search" />
+
     <TextView
         android:id="@+id/tv_result"
         android:layout_width="0dp"
         android:layout_height="@dimen/text_view_height_in_main_activity"
+        android:paddingStart="@dimen/indent_text_view_in_main_activity"
+        android:paddingLeft="@dimen/indent_text_view_in_main_activity"
+        android:paddingEnd="@dimen/indent_text_view_in_main_activity"
+        android:paddingRight="@dimen/indent_text_view_in_main_activity"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button2"
-        android:paddingStart="@dimen/indent_text_view_in_main_activity"
-        android:paddingEnd="@dimen/indent_text_view_in_main_activity"
-        app:layout_constraintVertical_bias="0.0"
-        android:paddingLeft="@dimen/indent_text_view_in_main_activity"
-        android:paddingRight="@dimen/indent_text_view_in_main_activity" />
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/tv_list_your_cities"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/indent_text_view_in_main_activity"
+        android:text="@string/list_of_your_cities"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_result" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_list_city"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:paddingStart="@dimen/indent_text_view_in_main_activity"
+        android:paddingLeft="@dimen/indent_text_view_in_main_activity"
+        android:paddingTop="@dimen/indent_text_view_in_main_activity"
+        android:paddingEnd="@dimen/indent_text_view_in_main_activity"
+        android:paddingRight="@dimen/indent_text_view_in_main_activity"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_result"
-        android:paddingTop="@dimen/indent_text_view_in_main_activity"
-        android:paddingStart="@dimen/indent_text_view_in_main_activity"
-        android:paddingEnd="@dimen/indent_text_view_in_main_activity"
-        android:paddingLeft="@dimen/indent_text_view_in_main_activity"
-        android:paddingRight="@dimen/indent_text_view_in_main_activity" />
-
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
-        android:text="Button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/b_search" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_list_your_cities" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
