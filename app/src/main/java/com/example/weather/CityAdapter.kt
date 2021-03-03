@@ -2,12 +2,16 @@ package com.example.weather
 
 import android.app.AlertDialog
 import android.content.DialogInterface
+import android.util.LayoutDirection
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.appcompat.widget.ButtonBarLayout
+import androidx.core.view.get
 import androidx.recyclerview.widget.RecyclerView
+import org.w3c.dom.Text
 import timber.log.Timber
 
 
@@ -36,7 +40,7 @@ class CityAdapter(
                     .inflate(R.layout.item, parent, false))
         } else {
             ButtonViewHolder(Button(parent.context).apply {
-                text = "Добавить город"
+                text = context.resources.getString(R.string.add_city)
                 layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.WRAP_CONTENT)
             })

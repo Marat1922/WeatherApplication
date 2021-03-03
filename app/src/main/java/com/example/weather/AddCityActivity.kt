@@ -58,9 +58,9 @@ class AddCityActivity : AppCompatActivity() {
     fun addNewCity(newCity: String) {
         if (!cityNames.contains(newCity)) {
             cityNames.add(newCity)
+            adapter.notifyDataSetChanged()
         } else {
             Toast.makeText(this, "Такой город уже есть", Toast.LENGTH_LONG).show()
         }
-        adapter.notifyDataSetChanged()
     }
 }

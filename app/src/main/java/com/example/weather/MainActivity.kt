@@ -61,7 +61,6 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, MyNotificationActivity::class.java)
             startActivity(intent)
         }
-
         btnSearch.setOnClickListener {
             loadWeather(this, editTextCity.text.toString(), false)
         }
