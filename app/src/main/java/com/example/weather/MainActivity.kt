@@ -30,6 +30,7 @@ import java.io.IOException
 import java.lang.ref.WeakReference
 import java.net.URL
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 class MainActivity : AppCompatActivity() {
@@ -41,6 +42,8 @@ class MainActivity : AppCompatActivity() {
     lateinit var fusedLocationClient: FusedLocationProviderClient
     lateinit var sharedPreferences: SharedPreferences
     lateinit var btnNot: Button
+    lateinit var cityNameList: ArrayList<City>
+//    lateinit var database: CityDatabase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Timber.d("метод onCreate")
@@ -52,19 +55,19 @@ class MainActivity : AppCompatActivity() {
         btnSearch = findViewById(R.id.b_search)
         rvListCity = findViewById(R.id.rv_list_city)
         btnNot = findViewById(R.id.button2)
+//        database = CityDatabase.getInstance(this)
 
         btnNot.setOnClickListener {
-            intent = Intent(this, MyNotification::class.java)
+            val intent = Intent(this, MyNotificationActivity::class.java)
             startActivity(intent)
         }
-
         btnSearch.setOnClickListener {
             loadWeather(this, editTextCity.text.toString(), false)
         }
 
-        val cityNameList = resources.getStringArray(R.array.city_name).map { nameFromArray ->
+        cityNameList = resources.getStringArray(R.array.city_name).map { nameFromArray ->
             City(name = nameFromArray)
-        }
+        } as ArrayList<City>
         loadWeather(this, takeTheCityFromSharedPreferences(), false)
         val permission = ContextCompat.checkSelfPermission(this,
                 android.Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -77,8 +80,13 @@ class MainActivity : AppCompatActivity() {
 
             getCity()
         }
+//        getData()
+        adapter = CityAdapter(cityList, object : CityAdapter.OnItemClickListener {
+            override fun onButtonClick() {
+                val intent = Intent(this@MainActivity, AddCityActivity::class.java)
+                startActivity(intent)
+            }
 
-        adapter = CityAdapter(cityNameList, object : CityAdapter.OnItemClickListener {
             override fun onItemClick(cityName: String) {
                 Timber.d("MainActivity OnItemClick ")
                 loadWeather(this@MainActivity, cityName, true)
@@ -86,7 +94,6 @@ class MainActivity : AppCompatActivity() {
         })
         rvListCity.layoutManager = LinearLayoutManager(this)
         rvListCity.adapter = adapter
-
     }
 
     private fun isLocationEnabled(context: Context): Boolean {
@@ -177,7 +184,7 @@ class MainActivity : AppCompatActivity() {
                         activity.textViewWeather.text = activity.getString(R.string.s, city, temp, description)
                     }
                 } else {
-                    (activity as? MyNotification)?.яУзналТемпературу(temp!!)
+                    (activity as? MyNotificationActivity)?.яУзналТемпературу(temp!!)
                 }
             } else {
                 Toast.makeText(activity, R.string.not_find_city, Toast.LENGTH_SHORT).show()
@@ -185,10 +192,20 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+//    private fun getData(){
+//       val cityFromDB: List<City> = database.cityDao().getAllCity()
+//        cityNameList.clear()
+//        cityNameList.addAll(cityFromDB)
+//
+//    }
+
     companion object {
         const val RECORD_REQUEST_CODE: Int = 101
         const val KEY_CITY: String = "City"
         const val DEFAULT_CITY: String = "Бугульма"
+
+        var cityList = ArrayList<City>()
+
 
         fun loadWeather(context: Activity, city: String, isFromRecycler: Boolean) {
             Timber.d("метод loadWeather")

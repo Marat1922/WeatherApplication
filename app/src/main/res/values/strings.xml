@@ -3,9 +3,18 @@
     <string name="et_weather">Введите название города</string>
     <string name="b_search">Поиск</string>
     <string name="not_find_city">Город не найден</string>
+    <string name="are_you_sure_you_want_to_remove_the_city_from_the_list">Вы уверены, что хотите удалить город из списка?</string>
+    <string name="yes">ДА</string>
+    <string name="no">НЕТ</string>
 
     <string name="s">"Ваш город: %s\nТемпература: %s\nНа улице: %s"</string>
     <string name="see_the_weather">Посмотрите погоду</string>
+    <string name="todo">TODO</string>
+    <string name="list_of_your_cities">Список ваших городов</string>
+    <string name="add_city">Добавить город</string>
+    <string name="choose_city">Выбрать город</string>
+    <string name="add_list_city">Или выберете город из списка</string>
+    <string name="selected_cities">Выбранные города</string>
 
     <string-array name="city_name">
         <item>Москва</item>
