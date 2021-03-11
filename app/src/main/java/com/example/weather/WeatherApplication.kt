@@ -6,12 +6,16 @@ import android.app.NotificationManager
 import android.content.Context
 import android.graphics.Color
 import android.os.Build
+import timber.log.Timber
+import timber.log.Timber.DebugTree
+
 
 class WeatherApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
         onCreateNotificationChannel()
+        Timber.plant(DebugTree())
     }
 
     private fun onCreateNotificationChannel() {
