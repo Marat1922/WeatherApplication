@@ -1,10 +1,13 @@
 package com.example.weather
 
 import android.app.Activity
+import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.database.Cursor
+import android.database.sqlite.SQLiteDatabase
 import android.location.Address
 import android.location.Geocoder
 import android.location.LocationManager
@@ -55,7 +58,21 @@ class MainActivity : AppCompatActivity() {
         btnSearch = findViewById(R.id.b_search)
         rvListCity = findViewById(R.id.rv_list_city)
         btnNot = findViewById(R.id.button2)
+        val dbHelper: CitiesDBHelper = CitiesDBHelper(this)
+
 //        database = CityDatabase.getInstance(this)
+
+      val database: SQLiteDatabase = dbHelper.readableDatabase
+        var citiesFromDB = arrayListOf<City>()
+        val cursor: Cursor = database.query(CityContract.CitiesEntry.TABLE_NAME, null, null,null,null,null,null)
+        while (cursor.moveToNext()){
+            val title: String = cursor.getString(cursor.getColumnIndex(CityContract.CitiesEntry.COLUMN_CITY))
+            val city = City(title)
+            citiesFromDB.add(city)
+            Timber.d("Че тут записано то??")
+        }
+        cursor.close()
+
 
         btnNot.setOnClickListener {
             val intent = Intent(this, MyNotificationActivity::class.java)
@@ -81,7 +98,7 @@ class MainActivity : AppCompatActivity() {
             getCity()
         }
 //        getData()
-        adapter = CityAdapter(cityList, object : CityAdapter.OnItemClickListener {
+        adapter = CityAdapter(citiesFromDB, object : CityAdapter.OnItemClickListener {
             override fun onButtonClick() {
                 val intent = Intent(this@MainActivity, AddCityActivity::class.java)
                 startActivity(intent)
@@ -204,7 +221,7 @@ class MainActivity : AppCompatActivity() {
         const val KEY_CITY: String = "City"
         const val DEFAULT_CITY: String = "Бугульма"
 
-        var cityList = ArrayList<City>()
+//        var cityList = ArrayList<City>()
 
 
         fun loadWeather(context: Activity, city: String, isFromRecycler: Boolean) {

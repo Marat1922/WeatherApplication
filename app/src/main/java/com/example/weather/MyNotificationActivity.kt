@@ -48,7 +48,7 @@ class MyNotificationActivity : AppCompatActivity() {
         contentView.setTextViewText(R.id.textViewTemper, "Температура: $temper")
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val soundUri: Uri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + applicationContext.packageName + "/" + R.raw.sound)
+//            val soundUri: Uri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + applicationContext.packageName + "/" + R.raw.sound)
 
             builder = Notification.Builder(this, WeatherApplication.CHANNEL_ID)
                     .setCustomContentView(contentView)
