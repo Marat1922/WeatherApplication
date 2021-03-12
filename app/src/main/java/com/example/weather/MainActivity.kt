@@ -42,7 +42,6 @@ class MainActivity : AppCompatActivity() {
     lateinit var btnSearch: Button
     lateinit var rvListCity: RecyclerView
     lateinit var adapter: CityAdapter
-    lateinit var dbHelper: CitiesDBHelper
     lateinit var fusedLocationClient: FusedLocationProviderClient
     lateinit var sharedPreferences: SharedPreferences
     lateinit var btnNot: Button
@@ -59,19 +58,11 @@ class MainActivity : AppCompatActivity() {
         btnSearch = findViewById(R.id.b_search)
         rvListCity = findViewById(R.id.rv_list_city)
         btnNot = findViewById(R.id.button2)
-        dbHelper = CitiesDBHelper(this)
+        val dbHelper: CitiesDBHelper = CitiesDBHelper(this)
 
 //        database = CityDatabase.getInstance(this)
 
       val database: SQLiteDatabase = dbHelper.readableDatabase
-//        Timber.d("awe2")
-//        Companion.cityList.forEach {city ->
-//            Timber.d("awe2")
-//            val contentValues: ContentValues? = null
-//            contentValues?.put(CityContract.CitiesEntry.COLUMN_CITY, city.name)
-//            database.insert(CityContract.CitiesEntry.TABLE_NAME, null, contentValues)
-//
-//        }
         var citiesFromDB = arrayListOf<City>()
         val cursor: Cursor = database.query(CityContract.CitiesEntry.TABLE_NAME, null, null,null,null,null,null)
         while (cursor.moveToNext()){
